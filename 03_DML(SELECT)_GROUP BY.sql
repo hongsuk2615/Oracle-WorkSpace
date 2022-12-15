@@ -36,7 +36,7 @@ SELECT DEPT_CODE,                      --4.
  ORDER BY "총 급여 합" DESC;             --5.
 
 -- 각 직급별 직급코드, 총 급여의 합, 사원수, 보너스를 받는 사원수, 평균급여, 최고 급여, 최소 급여
-SELECT JOB_CODE    AS "직급코드",
+SELECT JOB_CODE     AS "직급코드",
        SUM(SALARY)  AS "총 급여의 합",
        COUNT(*)     AS "사원수",
        COUNT(BONUS) AS "보너스를 받는 사원수",
@@ -75,7 +75,7 @@ SELECT DEPT_CODE,
 HAVING ROUND(AVG(SALARY)) >= 3000000;
 
 -- 각 직급별로 총 급여합이 1000만원 이상인 직급코드, 급여 합을 조회
-SELECT JOB_CODE AS "직급코드",
+SELECT JOB_CODE    AS "직급코드",
        SUM(SALARY) AS "급여 합"
   FROM EMPLOYEE
  GROUP BY JOB_CODE
@@ -84,7 +84,7 @@ HAVING SUM(SALARY) >= 10000000;
 -- 각 직급별 급여 평균이 300만원 이상인 직급코드, 평균 급여, 사원수 , 최고급여, 최소급여
 SELECT JOB_CODE AS "직급코드",
        ROUND(AVG(SALARY)) AS "평균급여",
-       COUNT(*) AS "사원수",
+       COUNT(*)    AS "사원수",
        MAX(SALARY) AS "최고급여",
        MIN(SALARY) AS "최소급여"
   FROM EMPLOYEE
@@ -102,5 +102,21 @@ SELECT DEPT_CODE
   FROM EMPLOYEE
  GROUP BY DEPT_CODE
 HAVING AVG(SALARY) <= 3500000;
+
+-----------------------------------------------------
+/*
+    <SELECT 문 구조 및 실행 순서>
+    SELECT 조회하고자 하는 칼럼명 나열 /* / 리터럴 / 산술연산식 / 함수 / 별칭 부여
+      FROM 조회하고자하는 테이블명 / 인라인쿼리 / 가상테이블(DUAL)
+     WHERE 조건식 (그룹함수 사용할 수 없음)
+     GROUP BY 그룹기준에 해당하는 칼럼명 / 함수식
+    HAVING 그룹함수에 대한 조건식
+     ORDER BY  정렬 기준에 해당하는 칼럼명 / 별칭 / 컬럼의 순번 [ASC/DESC] 생략가능 [NULLS FIRST/ NULLS LAST] 생략가능
+     
+   실행순서 : FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY  
+    
+*/
+
+    
   
        
