@@ -116,7 +116,92 @@ HAVING AVG(SALARY) <= 3500000;
    실행순서 : FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY  
     
 */
-
+/*
+    <집합 연산자 SET OPERATION>
+    여러 개의 쿼리문을 가지고 하나의 쿼리문으로 만드는 연산자
+    -UNION(합집합) : 두 쿼리문을 수행한 결과값을 더한 후 중복 제거를 한것 => OR 
+    -UNION ALL : 두 쿼리문을 수행한 결과값을 더한 후 중복 제거를 하지 않은 것 => 합집합 + 교집합
+    -INTERSECT (교집합) : 여러 쿼리 결과의 중복된 결과만 조회 => AND
+    -MINUS (차집합) : 선행쿼리결과에서 후행 쿼리결과를 뺀 나머지
     
-  
+    주의해야 할점 : 두 쿼리문의 결과를 합쳐서 한개의 테이블로 보여줘야 하기 때문에 두 쿼리문의 SELECT절 부분은 같아야 한다.
+                  즉, 조회할 컬럼이 동일해야한다.
+*/
+--1. UNION(합집합) : 두쿼리문을 수행한 결과값을 더하지만 중복은 제거
+--부서코드가 D5 이거나 또는 급여가 300만원 초과인 사원들 조회 (사번, 사원명, 부서코드, 급여)
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D5' --6명
+ UNION
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , SALARY
+  FROM EMPLOYEE
+ WHERE SALARY > 3000000; -- 8명  
+ 
+-- 직급코드가 J6이거나 또는 부서코드가 D1인 사원들을 조회 (사번, 사원명, 부서코드, 직급코드) => UNION을 이용해서
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE JOB_CODE = 'J6'
+ UNION
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D1';
+
+-- 2. UNION ALL : 여러개의 쿼리결과를 더해서 보여주는 연산자. (중복제거안함)
+-- 직급코드가 J6이거나 부서코드가 D1인 사원들을 조회(사번, 사원명, 부서코드, 직급코드)
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE JOB_CODE = 'J6'
+ UNION ALL
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D1' ;
+ 
+-- 3. INTERSECT(교집합) : 여러 쿼리 결과의 중복된 결과만 조회 => AND
+-- 직급코드가 J6 이면서 부서코드가 D1인 사원들을 조회(사번, 사원명, 부서코드, 직급코드)
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE JOB_CODE = 'J6'
+INTERSECT
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D1' ;    
+
+--4. MINUS(차집합) : 선행쿼리결과에서 후행 쿼리결과를 뺀 나머지
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE JOB_CODE = 'J6'
+ MINUS
+SELECT EMP_ID
+     , EMP_NAME
+     , DEPT_CODE
+     , JOB_CODE
+  FROM EMPLOYEE
+ WHERE DEPT_CODE = 'D1' ;    
        
