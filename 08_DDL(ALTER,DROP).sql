@@ -22,7 +22,6 @@ SELECT * FROM DEPT_COPY;
 --CNAME 칼럼추가.
 ALTER TABLE DEPT_COPY ADD CNAME VARCHAR2(20);
 -- 새로운 칼럼이 만들어지고 기본값으로 NULL값이 추가됨.
-
 -- LNAME 칼럼추가 DEFAULT지정해서
 ALTER TABLE DEPT_COPY ADD LNAME VARCHAR2(20) DEFAULT '한국'; 
 -- 새로운 칼럼이 만들어지고 NULL값이 아닌 DEFAULT값으로 채워짐.
@@ -37,7 +36,10 @@ ALTER TABLE DEPT_COPY MODIFY DEPT_ID NUMBER;
 
 -- 현재 변경하고자하는 칼럼에 담겨있는 값보다 작게는 변경 불가
 ALTER TABLE DEPT_COPY MODIFY DEPT_ID CHAR(1);
-
+CREATE TABLE TEST (
+    TEST1 VARCHAR2(20)
+);
+ALTER TABLE TEST ADD PNAME VARCHAR2(20) NOT NULL UNIQUE;
 -- 한번에 여러개의 컬럼 변경 가능
 -- DEPT_TITLE 칼럼의 데이터타입을 VARCHAR2(40)으로
 -- LOCATION_ID 칼럼의 데이터타입을 VARCHAR2(2)
@@ -93,4 +95,52 @@ MODIFY LNAME CONSTRAINT DCOPY_NN NOT NULL;
 -- DEPT_COPY 테이블에 DCOPY_PK 지우기
 ALTER TABLE DEPT_COPY DROP CONSTRAINT DCOPY_PK;
 
+-- DEPT_COPY 테이블에 DCOPY_UQ, DCOPY_NN 제약조건 지우기
+ALTER TABLE DEPT_COPY
+DROP CONSTRAINT DCOPY_UQ
+MODIFY LNAME NULL;
 
+
+-- 3) 칼럼명, 제약조건명, 테이블명 변경 (RENAME)
+
+-- 3_1) 컬럼명 변경 : RENAME COLUMN 원래컬럼명 TO 바꿀컬럼명;
+--DEPT_COPY테이블에서 DEPT_TITLE 컬럼을 DEPT_NAME으로 바꾸기
+ALTER TABLE DEPT_COPY RENAME COLUMN DEPT_TITLE TO DEPT_NAME;
+-- 3_2) 제약조건명 변경 : RENAME CONSTRAINT 기존제약명 TO 바꿀제약명
+ALTER TABLE DEPT_COPY RENAME CONSTRAINT SYS_C0011502 TO DCOPY_DID_NN;
+-- 3_3) 테이블명 변경 : RENAME TABLE 기존테이블명 TO 바꿀테이블명 || RENAME TO 바꿀테이블명
+-- DEPT_COPY테이블 이름을 DEPT_TEST로 변경
+ALTER TABLE DEPT_COPY RENAME TO DEPT_TEST; -- 기존테이블이름이 제시돼서 생략가능.
+
+--------------------------------------------------------------------------------
+/*
+    2. DROP
+    객체를 삭제하는 구문
+    [표현법]
+    DROP 객체(TABLE, USER, VIEW 등등) 삭제하고자하는 객체이름;
+    
+*/
+
+--DEPT_COPY2 테이블 삭제
+DROP TABLE DEPT_COPY2;
+
+-- 부모테이블을 만들고, 부모테이블 삭제해보기
+ALTER TABLE DEPT_TEST
+ADD PRIMARY KEY(DEPT_ID); --PK제약조건 추가
+
+-- EMPLOYEE_COPY3테이블에 외래키 제약조건추가
+-- 이때 부모테이블은 DEPT_TEST 테이블의 DEPT_ID를 참조
+ALTER TABLE EMPLOYEE_COPY3 
+  ADD CONSTRAINT ECOPY_FK FOREIGN KEY(DEPT_CODE) REFERENCES DEPT_TEST(DEPT_ID);
+
+-- 부모테이블 삭제
+DROP TABLE DEPT_TEST;
+-- 자식테이블에서 참조되고 있어서 삭제할 수 없음.
+-- 단, 어딘가에서 참조되고 있는 부모테이블은 삭제되지않음.
+-- 부모테이블 삭제하고 싶다면
+-- 방법1) : 자식테이블을 먼저 삭제, 그 후 부모테이블을 삭제
+DROP TABLE EMPLOYEE_COPY3;
+DROP TABLE DEPT_TEST;
+-- 방법2) : 부모테이블만 삭제 하되 맞물려있는 외래키 제약조건도 함께 삭제
+DROP TABLE DEPT_TEST CASCADE CONSTRAINT;
+--------------------------------------------시험범위------------------------------------
