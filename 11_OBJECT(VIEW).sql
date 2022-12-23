@@ -122,7 +122,7 @@ CREATE TABLE TEST3(
 );
 
 -- 3. WITH CHECK OPTION 
--- SELECT 문의 WHERE 절에서 사용한 칼럼을 수정하지 못하게 하는 옵션.
+-- SELECT 문의 WHERE 절에서 사용한 칼럼을 수정하지 못하게 하는 옵션
 
 CREATE OR REPLACE VIEW V_CHECKOPTION
 AS SELECT EMP_ID
